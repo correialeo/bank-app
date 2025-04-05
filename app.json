@@ -1,6 +1,7 @@
 {
   "expo": {
-    "name": "bank-app",
+    "entryPoint": "./src/App.tsx",
+    "name": "BankApp",
     "slug": "bank-app",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -23,6 +24,9 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-secure-store"
+    ]
   }
 }
