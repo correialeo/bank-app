@@ -7,9 +7,25 @@ import {
   Share,
   ActivityIndicator,
   Alert,
+  StatusBar,
+  ScrollView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { api } from '../services/api';
+
+const COLORS = {
+  primary: '#8A05BE', 
+  secondary: '#00D16C', 
+  background: '#121212',
+  cardBackground: '#1E1E1E',
+  text: '#FFFFFF',
+  textSecondary: '#B3B3B3',
+  inputBackground: '#2C2C2C',
+  inputBorder: '#3D3D3D',
+  inputPlaceholder: '#6E6E6E',
+  error: '#FF453A',
+  success: '#00D16C',
+};
 
 interface UserInfo {
   id: string;
@@ -58,32 +74,46 @@ export const ReceiveMoneyScreen = () => {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#2196F3" />
+        <StatusBar barStyle="light-content" backgroundColor={COLORS.background} />
+        <ActivityIndicator size="large" color={COLORS.primary} />
       </View>
     );
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.card}>
+    <ScrollView style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor={COLORS.background} />
+      
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Receber Dinheiro</Text>
+      </View>
+      
+      <View style={styles.content}>
         <View style={styles.iconContainer}>
-          <Ionicons name="arrow-down-circle" size={64} color="#2196F3" />
+          <View style={styles.iconCircle}>
+            <Ionicons name="arrow-down" size={38} color={COLORS.text} />
+          </View>
         </View>
 
-        <Text style={styles.title}>Receba Dinheiro</Text>
+        <Text style={styles.title}>Receba Transferências</Text>
         <Text style={styles.subtitle}>
-          Compartilhe seu apelido para receber transferências
+          Compartilhe seu apelido para receber pagamentos
         </Text>
 
-        <View style={styles.infoContainer}>
+        <View style={styles.infoCard}>
           <View style={styles.infoItem}>
             <Text style={styles.infoLabel}>Nome</Text>
             <Text style={styles.infoValue}>{userInfo?.nome}</Text>
           </View>
 
-          <View style={styles.infoItem}>
+          <View style={styles.infoItemHighlight}>
             <Text style={styles.infoLabel}>Apelido</Text>
-            <Text style={styles.infoValueHighlight}>{userInfo?.apelido}</Text>
+            <View style={styles.nickContainer}>
+              <Text style={styles.infoValueHighlight}>{userInfo?.apelido}</Text>
+              <TouchableOpacity onPress={handleShareInfo} style={styles.copyButton}>
+                <Ionicons name="copy-outline" size={20} color={COLORS.primary} />
+              </TouchableOpacity>
+            </View>
           </View>
 
           {userInfo?.documento && (
@@ -97,146 +127,189 @@ export const ReceiveMoneyScreen = () => {
         </View>
 
         <TouchableOpacity style={styles.shareButton} onPress={handleShareInfo}>
-          <Ionicons name="share-social-outline" size={20} color="#fff" />
+          <Ionicons name="share-social-outline" size={20} color={COLORS.text} />
           <Text style={styles.shareButtonText}>Compartilhar Meus Dados</Text>
         </TouchableOpacity>
 
-        <Text style={styles.instructions}>
-          Peça para a pessoa enviar dinheiro usando seu apelido como identificador. O valor será
-          creditado imediatamente em sua conta.
-        </Text>
+        <View style={styles.instructionCard}>
+          <Text style={styles.instructionTitle}>Como receber dinheiro</Text>
+          
+          <View style={styles.stepContainer}>
+            <View style={styles.stepCircle}>
+              <Text style={styles.stepNumber}>1</Text>
+            </View>
+            <Text style={styles.stepText}>
+              Compartilhe seu apelido com quem deseja receber dinheiro
+            </Text>
+          </View>
+          
+          <View style={styles.stepContainer}>
+            <View style={styles.stepCircle}>
+              <Text style={styles.stepNumber}>2</Text>
+            </View>
+            <Text style={styles.stepText}>
+              A outra pessoa fará uma transferência usando seu apelido
+            </Text>
+          </View>
+          
+          <View style={styles.stepContainer}>
+            <View style={styles.stepCircle}>
+              <Text style={styles.stepNumber}>3</Text>
+            </View>
+            <Text style={styles.stepText}>
+              O valor será creditado imediatamente em sua conta
+            </Text>
+          </View>
+        </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: COLORS.background,
+  },
+  header: {
+    paddingTop: 20,
+    paddingBottom: 16,
+    paddingHorizontal: 16,
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: COLORS.text,
+    textAlign: 'center',
+  },
+  content: {
     padding: 16,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 24,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    backgroundColor: COLORS.background,
   },
   iconContainer: {
     alignItems: 'center',
-    marginBottom: 16,
+    marginVertical: 24,
+  },
+  iconCircle: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: COLORS.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#333',
+    color: COLORS.text,
     textAlign: 'center',
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
-    color: '#666',
+    color: COLORS.textSecondary,
     textAlign: 'center',
     marginBottom: 24,
   },
-  infoContainer: {
-    backgroundColor: '#f8f8f8',
-    borderRadius: 8,
-    padding: 16,
+  infoCard: {
+    backgroundColor: COLORS.cardBackground,
+    borderRadius: 12,
+    padding: 20,
     marginBottom: 24,
   },
   infoItem: {
-    marginBottom: 16,
+    marginBottom: 20,
+  },
+  infoItemHighlight: {
+    marginBottom: 20,
+    paddingVertical: 8,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: COLORS.inputBorder,
+  },
+  nickContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   infoLabel: {
     fontSize: 14,
-    color: '#666',
-    marginBottom: 4,
+    color: COLORS.textSecondary,
+    marginBottom: 8,
   },
   infoValue: {
     fontSize: 16,
-    color: '#333',
+    color: COLORS.text,
     fontWeight: '500',
   },
   infoValueHighlight: {
-    fontSize: 20,
-    color: '#2196F3',
+    fontSize: 22,
+    color: COLORS.primary,
     fontWeight: 'bold',
   },
+  copyButton: {
+    padding: 8,
+  },
   shareButton: {
-    backgroundColor: '#2196F3',
-    borderRadius: 8,
+    backgroundColor: COLORS.primary,
+    borderRadius: 12,
     padding: 16,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 24,
+    shadowColor: COLORS.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
   },
   shareButtonText: {
-    color: '#fff',
+    color: COLORS.text,
     fontWeight: 'bold',
     fontSize: 16,
     marginLeft: 8,
   },
-  instructions: {
-    fontSize: 14,
-    color: '#666',
-    textAlign: 'center',
-    lineHeight: 20,
-  },
-  additionalInfoCard: {
-    backgroundColor: '#fff',
+  instructionCard: {
+    backgroundColor: COLORS.cardBackground,
     borderRadius: 12,
     padding: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    marginBottom: 24,
   },
-  infoHeaderContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  infoHeaderText: {
+  instructionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
-    marginLeft: 8,
+    color: COLORS.text,
+    marginBottom: 16,
   },
   stepContainer: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     marginBottom: 16,
   },
-  stepNumberContainer: {
+  stepCircle: {
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: '#2196F3',
+    backgroundColor: COLORS.primary,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
   },
   stepNumber: {
-    color: '#fff',
+    color: COLORS.text,
     fontWeight: 'bold',
     fontSize: 14,
   },
   stepText: {
     flex: 1,
     fontSize: 15,
-    color: '#333',
+    color: COLORS.text,
     lineHeight: 22,
   },
 });

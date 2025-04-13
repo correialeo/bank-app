@@ -6,13 +6,42 @@ import { useAuth } from '@/contexts/AuthContext';
 import { CreateAccountScreen } from '@/screens/CreateAccount';
 import { ReceiveMoneyScreen } from '@/screens/ReceiveMoney';
 import { NewTransactionScreen } from '@/screens/NewTransaction';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, View, Platform } from 'react-native';
 import { TransactionDetailsScreen } from '@/screens/TransactionDetails';
+import { Ionicons } from '@expo/vector-icons';
 
-// Auth Stack para usuários não autenticados
+const COLORS = {
+  primary: '#8A05BE',
+  secondary: '#00D16C', 
+  background: '#121212',
+  cardBackground: '#1E1E1E',
+  text: '#FFFFFF',
+  textSecondary: '#B3B3B3',
+  inputBackground: '#2C2C2C',
+  inputBorder: '#3D3D3D',
+  inputPlaceholder: '#6E6E6E',
+  error: '#FF453A',
+  success: '#00D16C',
+};
+
 const AuthStack = createStackNavigator();
 export const AuthNavigator = () => (
-  <AuthStack.Navigator>
+  <AuthStack.Navigator
+    screenOptions={{
+      headerStyle: {
+        backgroundColor: COLORS.primary,
+        elevation: 0,
+        shadowOpacity: 0,
+      },
+      headerTintColor: COLORS.text,
+      headerTitleStyle: {
+        fontWeight: 'bold',
+      },
+      cardStyle: {
+        backgroundColor: COLORS.background,
+      },
+    }}
+  >
     <AuthStack.Screen name="Login" component={LoginScreen} />
     <AuthStack.Screen name="CreateAccount" component={CreateAccountScreen} />
   </AuthStack.Navigator>
@@ -20,10 +49,53 @@ export const AuthNavigator = () => (
 
 const Tab = createBottomTabNavigator();
 export const TabNavigator = () => (
-  <Tab.Navigator>
-    <Tab.Screen name="Dashboard" component={DashboardScreen} />
-    <Tab.Screen name="Receber dinheiro" component={ReceiveMoneyScreen} />
-    <Tab.Screen name="Nova Transação" component={NewTransactionScreen} />
+  <Tab.Navigator
+    screenOptions={({ route }) => ({
+      headerShown: false,
+      tabBarShowLabel: true,
+      tabBarStyle: {
+        backgroundColor: COLORS.cardBackground,
+        borderTopWidth: 0,
+        height: 60,
+        paddingBottom: Platform.OS === 'ios' ? 20 : 10,
+        paddingTop: 10,
+      },
+      tabBarActiveTintColor: COLORS.primary,
+      tabBarInactiveTintColor: COLORS.textSecondary,
+      tabBarLabelStyle: {
+        fontSize: 12,
+        fontWeight: '500',
+      },
+      tabBarIcon: ({ focused, color, size }) => {
+        let iconName;
+
+        if (route.name === 'Dashboard') {
+          iconName = focused ? 'home' : 'home-outline';
+        } else if (route.name === 'ReceiveMoney') {
+          iconName = focused ? 'arrow-down-circle' : 'arrow-down-circle-outline';
+        } else if (route.name === 'NewTransaction') {
+          iconName = focused ? 'arrow-up-circle' : 'arrow-up-circle-outline';
+        }
+
+        return <Ionicons name={iconName as any} size={size} color={color} />;
+      },
+    })}
+  >
+    <Tab.Screen 
+      name="Dashboard" 
+      component={DashboardScreen} 
+      options={{ tabBarLabel: "Início" }}
+    />
+    <Tab.Screen 
+      name="ReceiveMoney" 
+      component={ReceiveMoneyScreen} 
+      options={{ tabBarLabel: "Receber" }}
+    />
+    <Tab.Screen 
+      name="NewTransaction" 
+      component={NewTransactionScreen} 
+      options={{ tabBarLabel: "Transferir" }}
+    />
   </Tab.Navigator>
 );
 
@@ -35,8 +107,10 @@ export const AppNavigator = () => (
       name="TransactionDetails" 
       component={TransactionDetailsScreen} 
       options={{ 
-        presentation: 'card',  
-        headerShown: false 
+        presentation: 'modal',
+        cardStyle: {
+          backgroundColor: COLORS.background,
+        },
       }} 
     />
   </AppStack.Navigator>
@@ -48,8 +122,13 @@ export const RootNav = () => {
 
   if (isLoading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" />
+      <View style={{ 
+        flex: 1, 
+        justifyContent: 'center', 
+        alignItems: 'center',
+        backgroundColor: COLORS.background 
+      }}>
+        <ActivityIndicator size="large" color={COLORS.primary} />
       </View>
     );
   }

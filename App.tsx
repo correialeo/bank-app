@@ -4,20 +4,30 @@ import { RootNav } from '@/navigation/RootNav';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 import { ActivityIndicator, View } from 'react-native';
 
+const COLORS = {
+  primary: '#8A05BE', 
+  background: '#121212',
+};
+
 const AppInner = () => {
   const { isLoading } = useAuth();
 
   if (isLoading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color="#000" />
+      <View style={{ 
+        flex: 1, 
+        justifyContent: 'center', 
+        alignItems: 'center',
+        backgroundColor: COLORS.background 
+      }}>
+        <ActivityIndicator size="large" color={COLORS.primary} />
       </View>
     );
   }
 
   return (
     <NavigationContainer>
-      <StatusBar style="auto" />
+      <StatusBar style="light" />
       <RootNav />
     </NavigationContainer>
   );
