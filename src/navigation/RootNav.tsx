@@ -7,7 +7,9 @@ import { CreateAccountScreen } from '@/screens/CreateAccount';
 import { ReceiveMoneyScreen } from '@/screens/ReceiveMoney';
 import { NewTransactionScreen } from '@/screens/NewTransaction';
 import { ActivityIndicator, View } from 'react-native';
+import { TransactionDetailsScreen } from '@/screens/TransactionDetails';
 
+// Auth Stack para usuários não autenticados
 const AuthStack = createStackNavigator();
 export const AuthNavigator = () => (
   <AuthStack.Navigator>
@@ -17,12 +19,27 @@ export const AuthNavigator = () => (
 );
 
 const Tab = createBottomTabNavigator();
-export const AppNavigator = () => (
+export const TabNavigator = () => (
   <Tab.Navigator>
     <Tab.Screen name="Dashboard" component={DashboardScreen} />
     <Tab.Screen name="Receber dinheiro" component={ReceiveMoneyScreen} />
     <Tab.Screen name="Nova Transação" component={NewTransactionScreen} />
   </Tab.Navigator>
+);
+
+const AppStack = createStackNavigator();
+export const AppNavigator = () => (
+  <AppStack.Navigator screenOptions={{ headerShown: false }}>
+    <AppStack.Screen name="Main" component={TabNavigator} />
+    <AppStack.Screen 
+      name="TransactionDetails" 
+      component={TransactionDetailsScreen} 
+      options={{ 
+        presentation: 'card',  
+        headerShown: false 
+      }} 
+    />
+  </AppStack.Navigator>
 );
 
 const RootStack = createStackNavigator();
