@@ -6,7 +6,7 @@ type ApiMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
 export const api = async <T>(
   endpoint: string,
-  method: ApiMethod = 'GET',
+  method: ApiMethod,
   body?: any
 ): Promise<T> => {
   try {
