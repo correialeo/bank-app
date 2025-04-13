@@ -4,6 +4,9 @@ import { LoginScreen } from '@/screens/Login';
 import { DashboardScreen } from '@/screens/Dashboard';
 import { useAuth } from '@/contexts/AuthContext';
 import { CreateAccountScreen } from '@/screens/CreateAccount';
+import { ReceiveMoneyScreen } from '@/screens/ReceiveMoney';
+import { NewTransactionScreen } from '@/screens/NewTransaction';
+import { ActivityIndicator, View } from 'react-native';
 
 const AuthStack = createStackNavigator();
 export const AuthNavigator = () => (
@@ -18,14 +21,22 @@ const Tab = createBottomTabNavigator();
 export const AppNavigator = () => (
   <Tab.Navigator>
     <Tab.Screen name="Dashboard" component={DashboardScreen} />
-    {/* <Tab.Screen name="SendMoney" component={SendMoneyScreen} /> */}
-    {/* <Tab.Screen name="Profile" component={ProfileScreen} /> */}
+    <Tab.Screen name="ReceiveMoney" component={ReceiveMoneyScreen} />
+    <Tab.Screen name="NewTransaction" component={NewTransactionScreen} />
   </Tab.Navigator>
 );
 
 const RootStack = createStackNavigator();
 export const RootNav = () => {
-  const { isAuthenticated } = useAuth(); 
+  const { isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
 
   return (
     <RootStack.Navigator screenOptions={{ headerShown: false }}>

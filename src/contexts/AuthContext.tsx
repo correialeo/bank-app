@@ -17,9 +17,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const loadToken = async () => {
-      const storedToken = await SecureStore.getItemAsync('jwt');
-      setToken(storedToken);
-      setIsLoading(false);
+      try {
+        const storedToken = await SecureStore.getItemAsync('jwt');
+        setToken(storedToken);
+      } catch (error) {
+        console.error('Error loading token:', error);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
     loadToken();
