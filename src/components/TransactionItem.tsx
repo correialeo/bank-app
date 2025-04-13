@@ -1,5 +1,20 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+
+const COLORS = {
+  primary: '#8A05BE', 
+  secondary: '#00D16C', 
+  background: '#121212',
+  cardBackground: '#1E1E1E',
+  text: '#FFFFFF',
+  textSecondary: '#B3B3B3',
+  inputBackground: '#2C2C2C',
+  inputBorder: '#3D3D3D',
+  inputPlaceholder: '#6E6E6E',
+  error: '#FF453A',
+  success: '#00D16C',
+};
 
 interface Transaction {
   id: number;
@@ -27,27 +42,51 @@ export const TransactionItem: React.FC<TransactionItemProps> = ({
     return new Date(dataISO).toLocaleDateString('pt-BR', {
       day: '2-digit',
       month: '2-digit',
-      year: 'numeric'
     });
   };
 
+  const getIconName = () => {
+    if (transaction.tipo === 'enviada') {
+      return 'arrow-up-outline';
+    } else {
+      return 'arrow-down-outline';
+    }
+  };
+
   return (
-    <TouchableOpacity style={styles.item} onPress={() => onPress(transaction)}>
-      <View style={styles.colunaData}>
-        <Text style={styles.data}>{formatarData(transaction.data)}</Text>
+    <TouchableOpacity 
+      style={styles.item} 
+      onPress={() => onPress(transaction)}
+      activeOpacity={0.7}
+    >
+      <View style={styles.iconContainer}>
+        <View style={[
+          styles.iconCircle, 
+          transaction.tipo === 'enviada' ? styles.iconNegative : styles.iconPositive
+        ]}>
+          <Ionicons 
+            name={getIconName()} 
+            size={16} 
+            color={COLORS.text} 
+          />
+        </View>
       </View>
       
-      <View style={styles.colunaPrincipal}>
-        <Text style={styles.descricao} numberOfLines={1}>
-          {transaction.descricao}
-        </Text>
-        <Text style={styles.categoria}>{transaction.categoria}</Text>
-      </View>
-
-      <View style={styles.colunaValor}>
-        <Text style={transaction.tipo === 'enviada' ? styles.valorNegativo : styles.valorPositivo}>
-          R$ {transaction.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-        </Text>
+      <View style={styles.contentContainer}>
+        <View style={styles.descricaoContainer}>
+          <Text style={styles.descricao} numberOfLines={1}>
+            {transaction.descricao}
+          </Text>
+          <Text style={styles.data}>{formatarData(transaction.data)}</Text>
+        </View>
+        
+        <View style={styles.detalhesContainer}>
+          <Text style={styles.categoria}>{transaction.categoria}</Text>
+          <Text style={transaction.tipo === 'enviada' ? styles.valorNegativo : styles.valorPositivo}>
+            {transaction.tipo === 'enviada' ? '-' : '+'} 
+            R$ {transaction.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+          </Text>
+        </View>
       </View>
     </TouchableOpacity>
   );
@@ -55,51 +94,69 @@ export const TransactionItem: React.FC<TransactionItemProps> = ({
 
 const styles = StyleSheet.create({
   item: {
-    backgroundColor: 'white',
+    backgroundColor: COLORS.cardBackground,
     flexDirection: 'row',
     padding: 16,
     marginVertical: 4,
-    marginHorizontal: 8,
-    borderRadius: 8,
-    elevation: 2,
+    marginHorizontal: 16,
+    borderRadius: 12,
   },
-  colunaData: {
-    width: 70,
-    marginRight: 12,
+  iconContainer: {
+    marginRight: 16,
+    alignItems: 'center',
     justifyContent: 'center',
   },
-  colunaPrincipal: {
+  iconCircle: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconPositive: {
+    backgroundColor: COLORS.success + '30', 
+  },
+  iconNegative: {
+    backgroundColor: COLORS.error + '30', 
+  },
+  contentContainer: {
     flex: 1,
-    marginRight: 12,
-    justifyContent: 'center',
   },
-  colunaValor: {
-    width: 100,
-    alignItems: 'flex-end',
-    justifyContent: 'center',
-  },
-  data: {
-    fontSize: 14,
-    color: '#757575',
+  descricaoContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
   },
   descricao: {
     fontSize: 16,
-    color: '#212121',
+    color: COLORS.text,
     fontWeight: '500',
+    flex: 1,
+  },
+  data: {
+    fontSize: 14,
+    color: COLORS.textSecondary,
+    marginLeft: 8,
+  },
+  detalhesContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 4,
   },
   categoria: {
     fontSize: 14,
-    color: '#9E9E9E',
-    marginTop: 4,
+    color: COLORS.textSecondary,
   },
   valorPositivo: {
     fontSize: 16,
-    color: '#4CAF50',
+    color: COLORS.success,
     fontWeight: '500',
   },
   valorNegativo: {
     fontSize: 16,
-    color: '#F44336',
+    color: COLORS.error,
     fontWeight: '500',
   },
 });
