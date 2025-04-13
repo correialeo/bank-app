@@ -11,16 +11,46 @@ export const CreateAccountScreen = ({ navigation }: any) => {
   const [senha, setSenha] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const formatCPF = (text: string) => {
+    const cleanText = text.replace(/\D/g, '');
+    
+    const limitedText = cleanText.slice(0, 11);
+    
+    let formattedCPF = '';
+    
+    if (limitedText.length <= 3) {
+      formattedCPF = limitedText;
+    } else if (limitedText.length <= 6) {
+      formattedCPF = `${limitedText.slice(0, 3)}.${limitedText.slice(3)}`;
+    } else if (limitedText.length <= 9) {
+      formattedCPF = `${limitedText.slice(0, 3)}.${limitedText.slice(3, 6)}.${limitedText.slice(6)}`;
+    } else {
+      formattedCPF = `${limitedText.slice(0, 3)}.${limitedText.slice(3, 6)}.${limitedText.slice(6, 9)}-${limitedText.slice(9)}`;
+    }
+    
+    return formattedCPF;
+  };
+
+  const handleCPFChange = (text: string) => {
+    const formattedCPF = formatCPF(text);
+    setCpf(formattedCPF);
+  };
+
   const handleCreateAccount = async () => {
     setLoading(true);
     try {
       if (!nome || !cpf || !apelido || !senha) {
         throw new Error('Preencha todos os campos');
       }
+      
+      const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
+      if (!cpfRegex.test(cpf)) {
+        throw new Error('CPF inválido. Use o formato XXX.XXX.XXX-XX');
+      }
 
       const response = await api('/contas', 'POST', {
         nome,
-        cpf,
+        cpf, 
         apelido,
         senha
       });
@@ -53,10 +83,11 @@ export const CreateAccountScreen = ({ navigation }: any) => {
       
       <TextInput
         style={styles.input}
-        placeholder="CPF (somente números)"
+        placeholder="CPF (XXX.XXX.XXX-XX)"
         value={cpf}
-        onChangeText={setCpf}
+        onChangeText={handleCPFChange}
         keyboardType="numeric"
+        maxLength={14} 
       />
       
       <TextInput
