@@ -1,88 +1,105 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { format, parseISO } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
-interface TransactionItemProps {
+interface Transaction {
+  id: number;
   valor: number;
   data: string;
   descricao: string;
-  tipo: 'credito' | 'debito';
   categoria: string;
+  tipo: string;
+  contraparte: {
+    apelido: string;
+    nome: string;
+  };
+}
+
+interface TransactionItemProps {
+  transaction: Transaction;
+  onPress: (transaction: Transaction) => void;
 }
 
 export const TransactionItem: React.FC<TransactionItemProps> = ({
-  valor,
-  data,
-  descricao,
-  tipo,
-  categoria,
+  transaction,
+  onPress,
 }) => {
-  const formattedDate = format(parseISO(data), "dd/MM/yyyy 'às' HH:mm", {
-    locale: ptBR,
-  });
+  const formatarData = (dataISO: string) => {
+    return new Date(dataISO).toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+  };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.leftContent}>
-        <Text style={styles.description}>{descricao}</Text>
-        <Text style={styles.date}>{formattedDate}</Text>
+    <TouchableOpacity style={styles.item} onPress={() => onPress(transaction)}>
+      <View style={styles.colunaData}>
+        <Text style={styles.data}>{formatarData(transaction.data)}</Text>
       </View>
-      <View style={styles.rightContent}>
-        <Text
-          style={[
-            styles.value,
-            tipo === 'credito' ? styles.creditValue : styles.debitValue,
-          ]}
-        >
-          {tipo === 'credito' ? '+' : '-'}{' '}
-          R$ {Math.abs(valor).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+      
+      <View style={styles.colunaPrincipal}>
+        <Text style={styles.descricao} numberOfLines={1}>
+          {transaction.descricao}
+        </Text>
+        <Text style={styles.categoria}>{transaction.categoria}</Text>
+      </View>
+
+      <View style={styles.colunaValor}>
+        <Text style={transaction.tipo === 'enviada' ? styles.valorNegativo : styles.valorPositivo}>
+          R$ {transaction.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
         </Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 16,
+  item: {
     backgroundColor: 'white',
-    marginHorizontal: 16,
-    marginBottom: 8,
+    flexDirection: 'row',
+    padding: 16,
+    marginVertical: 4,
+    marginHorizontal: 8,
     borderRadius: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
+    elevation: 2,
   },
-  leftContent: {
-    flex: 1,
-    paddingRight: 8,
-  },
-  rightContent: {
+  colunaData: {
+    width: 70,
+    marginRight: 12,
     justifyContent: 'center',
   },
-  description: {
+  colunaPrincipal: {
+    flex: 1,
+    marginRight: 12,
+    justifyContent: 'center',
+  },
+  colunaValor: {
+    width: 100,
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+  },
+  data: {
+    fontSize: 14,
+    color: '#757575',
+  },
+  descricao: {
     fontSize: 16,
+    color: '#212121',
     fontWeight: '500',
-    color: '#333',
-    marginBottom: 4,
   },
-  date: {
-    fontSize: 12,
-    color: '#666',
+  categoria: {
+    fontSize: 14,
+    color: '#9E9E9E',
+    marginTop: 4,
   },
-  value: {
+  valorPositivo: {
     fontSize: 16,
-    fontWeight: 'bold',
+    color: '#4CAF50',
+    fontWeight: '500',
   },
-  creditValue: {
-    color: '#27ae60', 
-  },
-  debitValue: {
-    color: '#e74c3c', 
+  valorNegativo: {
+    fontSize: 16,
+    color: '#F44336',
+    fontWeight: '500',
   },
 });

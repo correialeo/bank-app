@@ -3,6 +3,7 @@ import { FlatList, RefreshControl, View, Text, StyleSheet, TouchableOpacity, Act
 import { Ionicons } from '@expo/vector-icons';
 import { api } from '../services/api';
 import { useAuth } from '@/contexts/AuthContext';
+import { TransactionItem } from '../components/TransactionItem';
 
 interface Transacao {
   id: number;
@@ -30,7 +31,6 @@ export const DashboardScreen = ({ navigation }: any) => {
 
   const carregarDados = async (forcarAtualizacao = false) => {
     try {
-      // Carrega saldo e extrato simultaneamente
       const [respostaSaldo, respostaExtrato] = await Promise.all([
         api<SaldoResponse>('/contas/saldo?tipo=todas', 'GET'),
         api<Transacao[]>('/contas/extrato?tipo=todas', 'GET')
@@ -55,12 +55,8 @@ export const DashboardScreen = ({ navigation }: any) => {
     carregarDados(true);
   };
 
-  const formatarData = (dataISO: string) => {
-    return new Date(dataISO).toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    });
+  const handleTransactionPress = (transaction: Transacao) => {
+    navigation.navigate('TransactionDetails', { transaction });
   };
 
   const Cabecalho = () => (
@@ -68,27 +64,6 @@ export const DashboardScreen = ({ navigation }: any) => {
       <Text style={styles.tituloSaldo}>
         Saldo Total: R$ {saldo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
       </Text>
-    </View>
-  );
-
-  const renderizarItem = ({ item }: { item: Transacao }) => (
-    <View style={styles.item}>
-      <View style={styles.colunaData}>
-        <Text style={styles.data}>{formatarData(item.data)}</Text>
-      </View>
-      
-      <View style={styles.colunaPrincipal}>
-        <Text style={styles.descricao} numberOfLines={1}>
-          {item.descricao}
-        </Text>
-        <Text style={styles.categoria}>{item.categoria}</Text>
-      </View>
-
-      <View style={styles.colunaValor}>
-        <Text style={item.tipo === 'enviada' ? styles.valorNegativo : styles.valorPositivo}>
-          R$ {item.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-        </Text>
-      </View>
     </View>
   );
 
@@ -106,7 +81,12 @@ export const DashboardScreen = ({ navigation }: any) => {
       <FlatList
         data={transacoes}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={renderizarItem}
+        renderItem={({ item }) => (
+          <TransactionItem 
+            transaction={item} 
+            onPress={handleTransactionPress}
+          />
+        )}
         ListHeaderComponent={<Cabecalho />}
         refreshControl={
           <RefreshControl
@@ -132,7 +112,6 @@ export const DashboardScreen = ({ navigation }: any) => {
         <Text style={styles.buttonText}>Nova Transferência</Text>
       </TouchableOpacity>
     </View>
-    
   );
 };
 
@@ -153,54 +132,6 @@ const styles = StyleSheet.create({
     color: '#2196F3',
     textAlign: 'center',
   },
-  item: {
-    backgroundColor: 'white',
-    flexDirection: 'row',
-    padding: 16,
-    marginVertical: 4,
-    marginHorizontal: 8,
-    borderRadius: 8,
-    elevation: 2,
-  },
-  colunaData: {
-    width: 70,
-    marginRight: 12,
-    justifyContent: 'center',
-  },
-  colunaPrincipal: {
-    flex: 1,
-    marginRight: 12,
-    justifyContent: 'center',
-  },
-  colunaValor: {
-    width: 100,
-    alignItems: 'flex-end',
-    justifyContent: 'center',
-  },
-  data: {
-    fontSize: 14,
-    color: '#757575',
-  },
-  descricao: {
-    fontSize: 16,
-    color: '#212121',
-    fontWeight: '500',
-  },
-  categoria: {
-    fontSize: 14,
-    color: '#9E9E9E',
-    marginTop: 4,
-  },
-  valorPositivo: {
-    fontSize: 16,
-    color: '#4CAF50',
-    fontWeight: '500',
-  },
-  valorNegativo: {
-    fontSize: 16,
-    color: '#F44336',
-    fontWeight: '500',
-  },
   listaVazia: {
     flex: 1,
     justifyContent: 'center',
@@ -215,18 +146,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  botaoNovaTransacao: {
-    position: 'absolute',
-    bottom: 24,
-    right: 24,
-    backgroundColor: '#2196F3',
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 4,
   },
   newTransactionButton: {
     position: 'absolute',
