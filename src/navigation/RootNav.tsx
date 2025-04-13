@@ -16,13 +16,12 @@ export const AuthNavigator = () => (
   </AuthStack.Navigator>
 );
 
-// Telas Principais
 const Tab = createBottomTabNavigator();
 export const AppNavigator = () => (
   <Tab.Navigator>
     <Tab.Screen name="Dashboard" component={DashboardScreen} />
-    <Tab.Screen name="ReceiveMoney" component={ReceiveMoneyScreen} />
-    <Tab.Screen name="NewTransaction" component={NewTransactionScreen} />
+    <Tab.Screen name="Receber dinheiro" component={ReceiveMoneyScreen} />
+    <Tab.Screen name="Nova Transação" component={NewTransactionScreen} />
   </Tab.Navigator>
 );
 
