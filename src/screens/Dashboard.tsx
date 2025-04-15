@@ -15,23 +15,7 @@ import { api } from '../services/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { TransactionItem } from '../components/TransactionItem';
 import { COLORS } from '@/utils/styles';
-
-interface Transacao {
-  id: number;
-  valor: number;
-  data: string;
-  descricao: string;
-  categoria: string;
-  tipo: string;
-  contraparte: {
-    apelido: string;
-    nome: string;
-  };
-}
-
-interface SaldoResponse {
-  saldo: number;
-}
+import { SaldoResponse, Transacao } from '@/utils/types';
 
 export const DashboardScreen = ({ navigation }: any) => {
   const [transacoes, setTransacoes] = useState<Transacao[]>([]);

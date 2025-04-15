@@ -13,13 +13,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { api } from '../services/api';
 import { COLORS } from '@/utils/styles';
-
-interface UserInfo {
-  id: string;
-  nome: string;
-  apelido: string;
-  documento: string;
-}
+import { UserInfo } from '@/utils/types';
 
 export const ReceiveMoneyScreen = () => {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);

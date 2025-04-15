@@ -1,40 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { RouteProp } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-
-type RootStackParamList = {
-  TransactionDetails: {
-    transaction: {
-      id: number;
-      valor: number;
-      data: string;
-      descricao: string;
-      categoria: string;
-      tipo: string;
-      contraparte: {
-        apelido: string;
-        nome: string;
-      };
-    };
-  };
-};
-
-type TransactionDetailsScreenNavigationProp = StackNavigationProp<
-  RootStackParamList,
-  'TransactionDetails'
->;
-
-type TransactionDetailsScreenRouteProp = RouteProp<
-  RootStackParamList,
-  'TransactionDetails'
->;
-
-type Props = {
-  navigation: TransactionDetailsScreenNavigationProp;
-  route: TransactionDetailsScreenRouteProp;
-};
+import { Props } from '@/utils/types';
 
 export const TransactionDetailsScreen: React.FC<Props> = ({ route, navigation }) => {
   const { transaction } = route.params;

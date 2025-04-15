@@ -16,11 +16,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { api } from '../services/api';
 import { COLORS } from '@/utils/styles';
-
-interface TransferResponse {
-  mensagem: string;
-  id: string;
-}
+import { TransferResponse } from '@/utils/types';
 
 export const NewTransactionScreen = () => {
   const navigation = useNavigation();
