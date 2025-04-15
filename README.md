@@ -64,4 +64,7 @@ yarn install
 npx expo start
 ```
 
+## 👤 Autor
+Leandro Correia
 
+Projeto desenvolvido para fins acadêmicos e de prática com React Native.
