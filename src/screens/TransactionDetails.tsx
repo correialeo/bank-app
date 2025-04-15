@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Props } from '@/utils/types';
+import { COLORS } from '@/utils/styles';
 
 export const TransactionDetailsScreen: React.FC<Props> = ({ route, navigation }) => {
   const { transaction } = route.params;
@@ -22,7 +23,7 @@ export const TransactionDetailsScreen: React.FC<Props> = ({ route, navigation })
         style={styles.backButton} 
         onPress={() => navigation.goBack()}
       >
-        <Ionicons name="arrow-back" size={24} color="#2196F3" />
+        <Ionicons name="arrow-back" size={24} color={COLORS.text} />
       </TouchableOpacity>
 
       <View style={styles.header}>
@@ -70,7 +71,7 @@ const DetailItem = ({ label, value, isLast = false }: DetailItemProps) => (
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: COLORS.background,
   },
   backButton: {
     padding: 16,
@@ -79,48 +80,59 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 16,
     paddingHorizontal: 24,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.inputBorder,
   },
   headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 16,
+    color: COLORS.text,
   },
   valorDetalhado: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
+    letterSpacing: 0.5,
   },
   valorPositivo: {
-    color: '#4CAF50',
+    color: COLORS.secondary,
   },
   valorNegativo: {
-    color: '#F44336',
+    color: COLORS.error,
   },
   card: {
-    backgroundColor: 'white',
-    borderRadius: 8,
-    padding: 16,
+    backgroundColor: COLORS.cardBackground,
+    borderRadius: 12,
+    padding: 20,
     margin: 16,
-    elevation: 2,
+    marginVertical: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   cardTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 18,
+    fontWeight: '600',
     marginBottom: 16,
+    color: COLORS.text,
   },
   detailItem: {
-    paddingVertical: 12,
+    paddingVertical: 14,
   },
   borderBottom: {
     borderBottomWidth: 1,
-    borderBottomColor: '#EEEEEE',
+    borderBottomColor: COLORS.inputBorder,
   },
   detailLabel: {
     fontSize: 14,
-    color: '#757575',
+    color: COLORS.textSecondary,
     marginBottom: 4,
+    letterSpacing: 0.25,
   },
   detailValue: {
     fontSize: 16,
-    color: '#212121',
+    color: COLORS.text,
+    fontWeight: '500',
   }
 });
