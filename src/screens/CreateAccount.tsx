@@ -2,19 +2,7 @@ import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Alert, Text, StyleSheet, SafeAreaView, ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { api } from '../services/api';
 import * as SecureStore from 'expo-secure-store';
-
-
-const COLORS = {
-  primary: '#8A05BE', 
-  secondary: '#00D16C', 
-  background: '#FFFFFF',
-  text: '#1E1E1E',
-  inputBg: '#F5F5F5',
-  inputBorder: '#E0E0E0',
-  error: '#FF3B30',
-  placeholderText: '#9E9E9E',
-  buttonText: '#FFFFFF',
-};
+import { COLORS } from '@/utils/styles';
 
 export const CreateAccountScreen = ({ navigation }: any) => {
   const [nome, setNome] = useState('');
@@ -253,7 +241,6 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 56,
-    backgroundColor: COLORS.inputBg,
     borderRadius: 12,
     paddingHorizontal: 16,
     fontSize: 16,
